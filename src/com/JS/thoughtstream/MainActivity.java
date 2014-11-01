@@ -1,127 +1,120 @@
 package com.JS.thoughtstream;
 
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.support.v4.view.GestureDetectorCompat;
 import android.text.Editable;
 import android.text.Layout;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Menu;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.MultiAutoCompleteTextView.Tokenizer;
+import android.widget.TextView;
+import com.firebase.client.Firebase;
+import java.io.*;
 
 public class MainActivity extends Activity {
+    public final String aURL = "https://docs-examples.firebaseio.com";
+    public final String FILENAME = "SAVE";
+    private GestureDetectorCompat mDetector;
+    EditText textBox;
 
-	EditText textBox;
-	
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		
-		//textBox = (EditText)findViewById(R.id.text_box);
-		
-		final InstantAutoComplete inputEditText = (InstantAutoComplete) findViewById(R.id.multi_box);
+    private void writeToFile(String data) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(openFileOutput(FILENAME, Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.close();
+        }
+        catch (IOException e) {
+            Log.e("Exception", "File write failed: " + e.toString());
+        }
+    }
 
-		String[] COUNTRIES = new String[] { "Belgium", "France", "Italy", "Germany", "Spain" };
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_dropdown_item_1line, COUNTRIES);
-		inputEditText.setAdapter(adapter);
-		inputEditText.setThreshold(1); //Set number of characters before the dropdown should be shown
 
-		//Create a new Tokenizer which will get text after '@' and terminate on ' '
-		inputEditText.setTokenizer(new Tokenizer() {
+    private String readFromFile() {
 
-		  @Override
-		  public CharSequence terminateToken(CharSequence text) {
-		    int i = text.length();
+        String ret = "";
 
-		    while (i > 0 && text.charAt(i - 1) == ' ') {
-		      i--;
-		    }
+        try {
+            InputStream inputStream = openFileInput(FILENAME);
 
-		    if (i > 0 && text.charAt(i - 1) == ' ') {
-		      return text;
-		    } else {
-		      if (text instanceof Spanned) {
-		        SpannableString sp = new SpannableString(text + " ");
-		        TextUtils.copySpansFrom((Spanned) text, 0, text.length(), Object.class, sp, 0);
-		        return sp;
-		      } else {
-		        return text + " ";
-		      }
-		    }
-		  }
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
 
-		  @Override
-		  public int findTokenStart(CharSequence text, int cursor) throws NoAtException {
-		    int i = cursor;
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString + "\n");
+                }
 
-		    while (i > 0 && text.charAt(i - 1) != '@') {
-		      i--;
-		    }
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            Log.e("login activity", "File not found: " + e.toString());
+        } catch (IOException e) {
+            Log.e("login activity", "Can not read file: " + e.toString());
+        }
 
-		    //Check if token really started with @, else we don't have a valid token
-		    if (i < 1 || text.charAt(i - 1) != '@') {
-		    	throw new NoAtException("no @");
-		    
-		    //  return cursor;
-		    }
+        return ret;
+    }
 
-		    return i;
-		  }
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(this);
+        Firebase rootRef = new Firebase("https://docs-examples.firebaseio.com/web/data");
+        String input = readFromFile();
+        setContentView(R.layout.activity_main);
+        final EditText aEditText = (EditText) findViewById(R.id.editText);
+        aEditText.setText(input);
 
-		  @Override
-		  public int findTokenEnd(CharSequence text, int cursor) {
-		    int i = cursor;
-		    int len = text.length();
+        TextView doubleTapDetect = (TextView) findViewById(R.id.textView);
+        doubleTapDetect.setText("");
+        doubleTapDetect.setOnTouchListener(new View.OnTouchListener(){
+            public boolean onTouch(View v, MotionEvent event){
+                MyGestureListener a = new MyGestureListener(aEditText);
+                return a.onDoubleTapEvent(event);
+            }
+        });
+    }
 
-		    while (i < len) {
-		      if (text.charAt(i) == ' ') {
-		        return i;
-		      } else {
-		        i++;
-		      }
-		    }
+    class MyGestureListener extends GestureDetector.SimpleOnGestureListener{
+        private EditText aEditText;
 
-		    return len;
-		  }
-		});
-	
-		inputEditText.addTextChangedListener(new TextWatcher() {
+        MyGestureListener(EditText pEditText){
+            aEditText = pEditText;
+        }
 
-			  @Override
-			  public void onTextChanged(CharSequence s, int start, int before, int count) {
-			    Layout layout = inputEditText.getLayout();
-			    int pos = inputEditText.getSelectionStart();
-			    int line = layout.getLineForOffset(pos);
-			    int baseline = layout.getLineBaseline(line);
+        @Override
+        public boolean onDoubleTapEvent(MotionEvent event){
+            aEditText.getText().replace(0,0,"\n");
+            return true;
+        }
+    }
 
-			    int bottom = inputEditText.getHeight();
+    public void onDestroy(){
+        final TextView output = (TextView) findViewById(R.id.editText);
+        writeToFile(output.getText().toString());
+    }
 
-			    inputEditText.setDropDownVerticalOffset(0);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
-			  }
 
-			  @Override
-			  public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-			  }
-
-			  @Override
-			  public void afterTextChanged(Editable s) {
-			  }
-			});
-		
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
-	}
-
-	
 }
