@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\classes-2737af85f64e60e43a87285719e5707832fe6fa4.jar"
+        jar="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.0"
+        sha1="686344a780033e4ba22b926cd225f8d4941247e6"/>
+    <item
+        dex="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\support-annotations-21.0.0-6df5079a5210c0118aa9ef44137c1f545f33f6bc.jar"
+        jar="C:\Users\Kelley\AppData\Local\Android\android-studio\sdk\extras\android\m2repository\com\android\support\support-annotations\21.0.0\support-annotations-21.0.0.jar"
+        jumboMode="false"
+        revision="21.1.0"
+        sha1="1a578b9607b36266c63d43a4fa0ab5664dbe911e"/>
+    <item
+        dex="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.0-fa4c4740e16c40e625388764d68ba6c57dd89391.jar"
+        jar="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\libs\internal_impl-21.0.0.jar"
+        jumboMode="false"
+        revision="21.1.0"
+        sha1="1609e6d42d0480b0f4188e2c29f75388fa12a8f0"/>
+    <item
+        dex="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\firebase-client-android-1.1.1-cf004ac7dfac1c3ecd0e26111f092227bab9c5be.jar"
+        jar="C:\Users\Kelley\Documents\GitHub\ideaflowyhack_mobile\app\libs\firebase-client-android-1.1.1.jar"
+        jumboMode="false"
+        revision="21.1.0"
+        sha1="083aee62faa9c7db01c433036e56cdaced3a51ea"/>
+
+</pre-dex-items>
