@@ -52,12 +52,17 @@ public class MainActivity extends Activity{
 
         try {
             InputStream inputStream = openFileInput(FILENAME);
-
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
-                long dateTime = Long.parseLong(bufferedReader.readLine());
+                long dateTime = new Date().getTime() - 864000000;
+                try {
+                    dateTime = Long.parseLong(bufferedReader.readLine());
+                } catch(Exception e){
+                    Log.d("login activity", "FILE IS NEW");
+                }
+
                 Date prevDate = new Date(dateTime);
                 StringBuilder stringBuilder = new StringBuilder();
                 Calendar cal1 = Calendar.getInstance();
@@ -65,7 +70,7 @@ public class MainActivity extends Activity{
                 cal1.setTime(prevDate);
                 cal2.setTime(new Date());
                 if(cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
-                        cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)){
+                        cal1.get(Calendar.DAY_OF_YEAR) != cal2.get(Calendar.DAY_OF_YEAR)){
                     stringBuilder.append(new Date() + "\n");
                 }
 
