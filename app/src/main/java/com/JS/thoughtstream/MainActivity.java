@@ -33,6 +33,7 @@ public class MainActivity extends Activity{
     private GestureDetector mDetector;
     private Date aDate;
     EditText textBox;
+    private IdeasProcessor ideasProcessor = null;
 
     private void writeToFile(String data) {
         try {
@@ -100,6 +101,7 @@ public class MainActivity extends Activity{
         setContentView(R.layout.activity_main);
         final EditText aEditText = (EditText) findViewById(R.id.editText);
         aEditText.setText(input);
+        ideasProcessor = new IdeasProcessor(input);
 
         TextView TapDetect = (TextView) findViewById(R.id.textView);
         TapDetect.setText("");
@@ -116,6 +118,7 @@ public class MainActivity extends Activity{
 
         String test = new Date().getTime() + "\n" + output.getText().toString();
         writeToFile(test);
+        ideasProcessor.process(test);
         super.onDestroy();
     }
 
