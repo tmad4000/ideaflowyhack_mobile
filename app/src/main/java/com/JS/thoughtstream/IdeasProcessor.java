@@ -1,5 +1,7 @@
 package com.JS.thoughtstream;
 
+import android.util.Log;
+
 import org.shaded.apache.commons.codec.binary.StringUtils;
 
 import java.util.HashSet;
@@ -32,7 +34,8 @@ public class IdeasProcessor {
     public void processIdea(String s) {
         String handle = getHandle(s);
         if((handle != null) && !handle.equals("")) {
-            sendIdeaToAPI(handle,  s.substring(handle.length()).trim());
+            Log.d("TETESTESTSTSTETESTESTESTETESTESTESTESTESTESTESTE", "SJFOIEGNIUOSBEIONSIGNSEIOBUOGISGOIENOFNESGNIE");
+            sendIdeaToAPI(handle, s.substring(handle.length()).trim());
         }
     }
 

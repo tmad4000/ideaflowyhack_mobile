@@ -2,6 +2,18 @@
 <pre-dex-items>
 
     <item
+        dex="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\firebase-client-android-1.1.1-dacbce5a9556419761a76e46be0a84d052dd5c01.jar"
+        jar="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\libs\firebase-client-android-1.1.1.jar"
+        jumboMode="false"
+        revision="21.1.0"
+        sha1="083aee62faa9c7db01c433036e56cdaced3a51ea"/>
+    <item
+        dex="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\classes-ef40b1e042731f769fd865cbdf4431c26aab23be.jar"
+        jar="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\classes.jar"
+        jumboMode="false"
+        revision="21.1.0"
+        sha1="686344a780033e4ba22b926cd225f8d4941247e6"/>
+    <item
         dex="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\internal_impl-21.0.0-473b6a01b8406b8bc10616745ca318de67e6d11b.jar"
         jar="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\libs\internal_impl-21.0.0.jar"
         jumboMode="false"
@@ -14,16 +26,10 @@
         revision="21.1.0"
         sha1="1a578b9607b36266c63d43a4fa0ab5664dbe911e"/>
     <item
-        dex="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\firebase-client-android-1.1.1-dacbce5a9556419761a76e46be0a84d052dd5c01.jar"
-        jar="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\libs\firebase-client-android-1.1.1.jar"
+        dex="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\gson-2.2.4-10933b9bc029555cf77f38a41dcb0e9706841d48.jar"
+        jar="C:\Users\Kelley\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.2.4\a60a5e993c98c864010053cb901b7eab25306568\gson-2.2.4.jar"
         jumboMode="false"
         revision="21.1.0"
-        sha1="083aee62faa9c7db01c433036e56cdaced3a51ea"/>
-    <item
-        dex="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\pre-dexed\debug\classes-ef40b1e042731f769fd865cbdf4431c26aab23be.jar"
-        jar="C:\Users\Kelley\Desktop\Android Repos\ideaflowyhack_mobile\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.0\classes.jar"
-        jumboMode="false"
-        revision="21.1.0"
-        sha1="686344a780033e4ba22b926cd225f8d4941247e6"/>
+        sha1="a60a5e993c98c864010053cb901b7eab25306568"/>
 
 </pre-dex-items>
