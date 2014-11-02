@@ -198,11 +198,12 @@ public class MainActivity extends Activity{
                 if(end != input.length() - 1) {
                     while (input.charAt(end) != '\n' || input.charAt(end + 1) != '\n') {
                         if (end == input.length() - 2) {
-                            end = input.length() - 1;
+                            end = input.length() - 2;
                             break;
                         }
                         end = end + 1;
                     }
+                    end = end +1;
                 }
                 Log.d(TAG, aEditText.getText().toString().substring(begin, end));
                 String handle = getHandle(aEditText.getText().toString().substring(begin, end));
@@ -258,7 +259,7 @@ public class MainActivity extends Activity{
                 aEditText.setDropDownVerticalOffset(line + 50);
 
                 int begin = start;
-                if(begin == 0){
+                if(begin == 0 || begin == aEditText.getText().length()){
                     return;
                 }
                 int end = start;
@@ -274,11 +275,12 @@ public class MainActivity extends Activity{
                 }
                 while(s.charAt(end) != '\n' || s.charAt(end + 1) != '\n'){
                     if(end == s.length() - 2){
-                        end = s.length() -1;
+                        end = s.length() - 2;
                         break;
                     }
                     end = end + 1;
                 }
+                end = end + 1;
                 String handle = getHandle(aEditText.getText().toString().substring(begin, end));
                 if(aIdeas.containsKey(handle)){
                     aIdea = aIdeas.get(handle);
@@ -496,10 +498,34 @@ public class MainActivity extends Activity{
         }
         test += output.getText().toString();
         writeToFile(test);
-        ideasProcessor.process(test);
         super.onDestroy();
     }
 
+    public void onStop(){
+        final TextView output = (TextView) findViewById(R.id.editText);
+
+        String test = String.valueOf(aIdeas.size()) + "\n";
+        Log.d(TAG, test);
+        for(Idea i : aIdeas.values()){
+            test += i.getHandle() + " " + i.getBegin() + " " + i.getEnd() + " " + i.getSubmit() + "\n";
+        }
+        test += output.getText().toString();
+        writeToFile(test);
+        super.onDestroy();
+    }
+
+    public void onPause(){
+        final TextView output = (TextView) findViewById(R.id.editText);
+
+        String test = String.valueOf(aIdeas.size()) + "\n";
+        Log.d(TAG, test);
+        for(Idea i : aIdeas.values()){
+            test += i.getHandle() + " " + i.getBegin() + " " + i.getEnd() + " " + i.getSubmit() + "\n";
+        }
+        test += output.getText().toString();
+        writeToFile(test);
+        super.onDestroy();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -714,4 +740,6 @@ public class MainActivity extends Activity{
 
         }
     }
+
+
 }
