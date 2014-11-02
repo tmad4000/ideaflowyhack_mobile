@@ -3,6 +3,7 @@ package com.JS.thoughtstream;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,6 +14,7 @@ import android.text.Editable;
 import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -47,6 +49,17 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+
+
+/* Uses hashmap to store ideas then everytime notes is initialized, the idea objects are added
+ *  Everytime submit is pressed, we parse the text for @'s and then if the handle is in the map already, we don't do anything
+ *  If the handle is not in the map, we add it to the map.
+ *  Whenever something is changed, the relative Idea in the map is updated and the submit boolean within the idea is set to true meaning it will submit.
+ *  Problems: Multiple handles in same file causes problems
+ *            The suggestion must auto complete right now to work so when you reopen file, you must autocomplete the suggestions
+ *            Colors has weird out of bounds exceptions
+ *            Date should work, but disabled for now for clarity
+ */
 
 public class MainActivity extends Activity{
     private Date aDate;
@@ -91,8 +104,29 @@ public class MainActivity extends Activity{
             if ( inputStream != null ) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                int objects = 0;
+                try{
+                    objects = Integer.parseInt(bufferedReader.readLine());
+                } catch(Exception e){
+                    Log.e(TAG, "FILE IS NEW");
+                }
+                for(int i = 0; i < objects; i++){
+                    String idea = bufferedReader.readLine();
+                    Log.d(TAG, idea);
+                    String[] params = idea.split(" ");
+                    String handle = params[0];
+                    int begin = Integer.parseInt(params[1]);
+                    int end = Integer.parseInt(params[2]);
+                    boolean submit = Boolean.parseBoolean(params[3]);
+                    Idea aIdea = Idea.getIdea(handle);
+                    aIdea.setBegin(begin);
+                    aIdea.setEnd(end);
+                    aIdea.setSubmit(submit);
+                    aIdeas.put(handle, aIdea);
+                }
                 String receiveString = "";
-                long dateTime = new Date().getTime() - 864000000;
+                StringBuilder stringBuilder = new StringBuilder();
+                /*long dateTime = new Date().getTime() - 864000000;
                 try {
                     dateTime = Long.parseLong(bufferedReader.readLine());
                 } catch(Exception e){
@@ -100,7 +134,6 @@ public class MainActivity extends Activity{
                 }
 
                 Date prevDate = new Date(dateTime);
-                StringBuilder stringBuilder = new StringBuilder();
                 Calendar cal1 = Calendar.getInstance();
                 Calendar cal2 = Calendar.getInstance();
                 cal1.setTime(prevDate);
@@ -109,7 +142,7 @@ public class MainActivity extends Activity{
                         cal1.get(Calendar.DAY_OF_YEAR) != cal2.get(Calendar.DAY_OF_YEAR)){
                     stringBuilder.append(new Date() + "\n");
                 }
-
+                */
                 while ( (receiveString = bufferedReader.readLine()) != null ) {
                     stringBuilder.append(receiveString + "\n");
                 }
@@ -127,6 +160,26 @@ public class MainActivity extends Activity{
         return ret;
     }
 
+    /*public void setColors(Idea i){
+            if(i.getSubmit()){
+                SpannableStringBuilder sb = new SpannableStringBuilder(aEditText.getText().toString().substring(i.getBegin(), i.getEnd()));
+                ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(255, 0, 0));
+                sb.setSpan(fcs, i.getBegin(), i.getEnd(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                aEditText.getText().replace(i.getBegin(), i.getEnd(), sb);
+            } else{
+                SpannableStringBuilder sb = new SpannableStringBuilder(aEditText.getText().toString().substring(i.getBegin(), i.getEnd()));
+                Log.d(TAG, String.valueOf(sb.toString().length()));
+                ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(0, 0, 0));
+                Log.d(TAG, String.valueOf(aEditText.getText().toString().charAt(i.getBegin())));
+                Log.d(TAG, String.valueOf(aEditText.getText().toString().charAt(i.getEnd())));
+                int test = i.getBegin();
+                if(test != 0){
+                    test -= 1;
+                }
+                sb.setSpan(fcs, test, i.getEnd()-1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                aEditText.getText().replace(i.getBegin(), i.getEnd(), sb);
+            }
+    }*/
     public void parseText(){
         String input = aEditText.getText().toString();
         for(int i = 0; i < input.length(); i++){
@@ -154,12 +207,15 @@ public class MainActivity extends Activity{
                 Log.d(TAG, aEditText.getText().toString().substring(begin, end));
                 String handle = getHandle(aEditText.getText().toString().substring(begin, end));
                 Idea potentialNewIdea = Idea.getIdea(handle);
+                potentialNewIdea.setBegin(begin);
+                potentialNewIdea.setEnd(end);
                 if(aIdeas.containsValue(potentialNewIdea)){
                     aIdeas.get(handle).setBegin(begin);
                     aIdeas.get(handle).setEnd(end);
                 } else{
                     aIdeas.put(handle, potentialNewIdea);
                 }
+                //setColors(potentialNewIdea);
             }
             //Log.d(TAG, String.valueOf(i));
         }
@@ -175,7 +231,7 @@ public class MainActivity extends Activity{
         aEditText = (InstantAutoComplete) findViewById(R.id.editText);
         aEditText.setText(input, TextView.BufferType.SPANNABLE);
         Button aButton = (Button) findViewById(R.id.button);
-
+        aButton.setText("Submit");
         aButton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 parseText();
@@ -185,6 +241,7 @@ public class MainActivity extends Activity{
                         Log.d(TAG, "IDEA HAS BEEN CHANGED YAAAAAAAAAAAAAAAAAAAAAAAAY");
                         sendQuery(i.getBegin(), i.getEnd());
                     }
+                    //setColors(i);
                 }
             }
         });
@@ -228,6 +285,7 @@ public class MainActivity extends Activity{
                     aIdea.setBegin(begin);
                     aIdea.setEnd(end);
                     aIdea.setSubmit(true);
+                    //setColors(aIdea);
                     Log.d(TAG, "SOMETHING CHANGED");
                 }
                 //sendQuery(begin, end);
@@ -431,19 +489,15 @@ public class MainActivity extends Activity{
     public void onDestroy(){
         final TextView output = (TextView) findViewById(R.id.editText);
 
-        String test = new Date().getTime() + "\n" + output.getText().toString();
+        String test = String.valueOf(aIdeas.size()) + "\n";
+        Log.d(TAG, test);
+        for(Idea i : aIdeas.values()){
+            test += i.getHandle() + " " + i.getBegin() + " " + i.getEnd() + " " + i.getSubmit() + "\n";
+        }
+        test += output.getText().toString();
         writeToFile(test);
         ideasProcessor.process(test);
         super.onDestroy();
-    }
-
-    public ArrayList<String> split(String aIdeas){
-        String[] a = aIdeas.split("\\n\\n");
-        ArrayList<String> aSplitIdeas = new ArrayList<String>();
-        for(String s : a){
-            aSplitIdeas.add(s);
-        }
-        return aSplitIdeas;
     }
 
     @Override
@@ -473,10 +527,14 @@ public class MainActivity extends Activity{
         if(idea.contains("@")) {
             int start = idea.indexOf("@");
             int end = idea.indexOf(" ", start);
+            int end2 = idea.indexOf("\n", start);
             if (end == -1) {
                 end = idea.length();
             }
-            return idea.substring(start, end);
+            if(end2 == -1){
+                end2 = idea.length();
+            }
+            return idea.substring(start, Math.min(end, end2));
         } else{
             return "";
         }
